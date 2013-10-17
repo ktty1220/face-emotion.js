@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>face-emotion.js Test</title>
+  <link rel="stylesheet" type="text/css" href="http://code.jquery.com/qunit/qunit-1.12.0.css" media="all" />
+  <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/blanket.js/1.1.4/blanket.min.js"></script>
+<!--  <link rel="stylesheet" type="text/css" href="./qunit/qunit.css" media="all" />-->
+<!--  <script type="text/javascript" src="./qunit/qunit.js"></script>-->
+<!--  <script type="text/javascript" src="./qunit/blanket.min.js"></script>-->
+
+  <script type="text/javascript" src="../js/face-emotion.js" data-cover></script>
+  <script type="text/javascript" src="./test.js"></script>
+  <style type="text/css">
+    #face {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="qunit-header">face-emotion.js Test</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+  <div id="face"></div>
+</body>
+</html>

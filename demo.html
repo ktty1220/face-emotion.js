@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>face-emotion.js DEMO</title>
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/redmond/jquery-ui.css">
+  <style type="text/css">
+    body { width: 800px; margin: 0 auto; }
+    a { outline: none; }
+    .box { float: left; width: 50%; }
+    .box .box-inner { padding: 40px 20px; }
+    .unit { margin-bottom: 20px; }
+    .unit h3 { font-size: 16px; }
+    .slider { margin: 5px 0; }
+    .scale { font-size: 12px; }
+    .meter .left { float: left; }
+    .meter .right { float: right; }
+    .meter .center { text-align: center; }
+    #opt-speed { text-align: right; }
+    #opt-state { font-weight: bold; color: blue; }
+    #opt-state.exec { color: red; }
+    #face { margin: 20px 0 0 50px; }
+    li { margin-bottom: 10px; }
+  </style>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/i18n/jquery-ui-i18n.min.js"></script>
+
+  <script type="text/javascript" src="./js/face-emotion.js"></script>
+</head>
+<body>
+  <a href=" https://github.com/ktty1220/face-emotion.js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+  <h1>face-emotion.js DEMO</h1>
+
+  <div class="content">
+    <div class="box">
+      <div class="box-inner">
+        <div class="unit">
+          <h3>■眉毛(eyebrow)</h3>
+          <div class="slider" id="slider-eyebrow"></div>
+          <div class="meter">
+            <div class="scale right">+100</div>
+            <div class="scale left">-100</div>
+            <div class="scale center">0</div>
+          </div>
+        </div>
+        <div class="unit">
+          <h3>■目(eye)</h3>
+          <div class="slider" id="slider-eye"></div>
+          <div class="meter">
+            <div class="scale right">+100</div>
+            <div class="scale left">-100</div>
+            <div class="scale center">0</div>
+          </div>
+        </div>
+        <div class="unit">
+          <h3>■口(mouth)</h3>
+          <div class="slider" id="slider-mouth"></div>
+          <div class="meter">
+            <div class="scale right">+100</div>
+            <div class="scale left">-100</div>
+            <div class="scale center">0</div>
+          </div>
+        </div>
+        <div class="unit">
+          <h3>■オプション</h3>
+          <ul>
+            <li>
+              <label for="opt-animate">アニメーション</label>
+              <input id="opt-animate" type="checkbox" value="1" checked="checked">
+            </li>
+            <li>
+              <label for="opt-speed">スピード</label>
+              <input id="opt-speed" type="text" value="10" size="4" max-length="4">
+            </li>
+            <li>
+              <span>状態</span>
+              <span id="opt-state">Ready</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <div class="box-inner">
+        <div id="face"></div>  
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(function () {
+      var face = new FaceEmotion('face', {
+        size: 300,
+        effect: {
+          tear: true,
+          angry: true
+        }
+      });
+      $('#opt-state').addClass('exec').text('Executing');
+      face.set({
+        eyebrow: 100,
+        eye: 100,
+        mouth: 100
+      }, {
+        complete: function () {
+          face.set({
+            eyebrow: -100,
+            eye: -100,
+            mouth: -100
+          }, {
+            speed: 5,
+            complete: function () {
+              face.set({
+                eyebrow: 0,
+                eye: 0,
+                mouth: 0
+              }, {
+                speed: 15,
+                complete: function () {
+                  $('#opt-state').removeClass('exec').text('Ready');
+                }
+              });
+            }
+          });
+        }
+      });
+
+      $.each([ 'eyebrow', 'eye', 'mouth' ], function () {
+        $('#slider-' + this).slider({
+          min: -100,
+          max: 100,
+          change: function (event, ui) {
+            $('#opt-state').addClass('exec').text('Executing');
+            face.set(this.id.substr(7), ui.value, {
+              animate: $('#opt-animate').is(':checked'),
+              speed: $('#opt-speed').val(),
+              complete: function () {
+                $('#opt-state').removeClass('exec').text('Ready');
+                //console.log(face.state());
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
