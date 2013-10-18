@@ -5,12 +5,9 @@ http = require 'http'
 path = require 'path'
 url = require 'url'
 
-require 'blanket'
 open = require 'open'
 coffee = require 'coffee-script'
 watch = require 'node-watch'
-
-require "../js/#{js}" for js in fs.readdirSync '../js' when /^(?!.*\.min).+\.js$/.test js
 
 port = Number(process.argv[2] ? 3000)
 mime =
@@ -46,4 +43,4 @@ watch cfs, (filename) ->
     console.log "\n#{message}"
 
 console.log '### QUnit Server ###'
-#open "http://localhost:#{port}/test/"
+open "http://localhost:#{port}/test/"

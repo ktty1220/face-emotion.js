@@ -14,14 +14,15 @@ notStrictEqual(actual, expected, message): actual !== expected
   var suite;
 
   suite = function() {
-    var clear, cssCheck, hasEffectStyle,
+    var clear, cssCheck, faceEmo, hasEffectStyle,
       _this = this;
     QUnit.config.reorder = false;
+    faceEmo = null;
     clear = function() {
       while (_this.face.firstChild) {
         _this.face.removeChild(_this.face.firstChild);
       }
-      return _this.obj = null;
+      return faceEmo = null;
     };
     hasEffectStyle = function() {
       var result, style, tmp, _ref, _ref1;
@@ -52,42 +53,42 @@ notStrictEqual(actual, expected, message): actual !== expected
         return new FaceEmotion('no-face');
       }), '存在しないIDを指定してnew -> throw');
       equal(hasEffectStyle(), false, 'エフェクト用CSSはDOMに追加されていない');
-      _this.obj = new FaceEmotion('face');
+      faceEmo = new FaceEmotion('face');
       equal(hasEffectStyle(), true, 'エフェクト用CSSはDOMに追加されている');
       equal(_this.face.getElementsByClassName('face-emotion-parts').length, 5, '#faceに顔パーツが作成される');
-      equal(_this.obj.parts.tear, null, '涙は作成されない');
-      return equal(_this.obj.parts.angry, null, '怒マークは作成されない');
+      equal(faceEmo.parts.tear, null, '涙は作成されない');
+      return equal(faceEmo.parts.angry, null, '怒マークは作成されない');
     });
     test('effect: tear指定', function() {
-      _this.obj = new FaceEmotion('face', {
+      faceEmo = new FaceEmotion('face', {
         effect: {
           tear: true
         }
       });
-      return notEqual(_this.obj.parts.tear, null, '涙が作成される');
+      return notEqual(faceEmo.parts.tear, null, '涙が作成される');
     });
     test('effect: angry指定', function() {
-      _this.obj = new FaceEmotion('face', {
+      faceEmo = new FaceEmotion('face', {
         effect: {
           angry: true
         }
       });
-      return notEqual(_this.obj.parts.angry, null, '怒マークが作成される');
+      return notEqual(faceEmo.parts.angry, null, '怒マークが作成される');
     });
     test('effect: tear & angry指定', function() {
-      _this.obj = new FaceEmotion('face', {
+      faceEmo = new FaceEmotion('face', {
         effect: {
           tear: true,
           angry: true
         }
       });
-      notEqual(_this.obj.parts.tear, null, '涙が作成される');
-      return notEqual(_this.obj.parts.angry, null, '怒マークが作成される');
+      notEqual(faceEmo.parts.tear, null, '涙が作成される');
+      return notEqual(faceEmo.parts.angry, null, '怒マークが作成される');
     });
     test('サイズ指定', function() {
       var outline, size;
       size = 500;
-      _this.obj = new FaceEmotion('face', {
+      faceEmo = new FaceEmotion('face', {
         size: size
       });
       outline = _this.face.getElementsByClassName('face-emotion-outline')[0];
@@ -103,18 +104,18 @@ notStrictEqual(actual, expected, message): actual !== expected
       teardown: function() {}
     });
     test('new直後', function() {
-      _this.obj = new FaceEmotion('face');
-      return deepEqual(_this.obj.state(), {
+      faceEmo = new FaceEmotion('face');
+      return deepEqual(faceEmo.state(), {
         eyebrow: 0,
         eye: 0,
         mouth: 0
       }, '初期状態: ALL0');
     });
     asyncTest('set(name, value)後', function() {
-      return _this.obj.set('mouth', -20, {
+      return faceEmo.set('mouth', -20, {
         complete: function() {
           start();
-          return deepEqual(_this.obj.state(), {
+          return deepEqual(faceEmo.state(), {
             eyebrow: 0,
             eye: 0,
             mouth: -20
@@ -123,14 +124,14 @@ notStrictEqual(actual, expected, message): actual !== expected
       });
     });
     asyncTest('set(parts)後', function() {
-      return _this.obj.set({
+      return faceEmo.set({
         eyebrow: -50,
         eye: -30,
         mouth: 30
       }, {
         complete: function() {
           start();
-          return deepEqual(_this.obj.state(), {
+          return deepEqual(faceEmo.state(), {
             eyebrow: -50,
             eye: -30,
             mouth: 30
@@ -139,44 +140,44 @@ notStrictEqual(actual, expected, message): actual !== expected
       });
     });
     test('set(name, value, { animate: false })後', function() {
-      _this.obj.set('mouth', 100, {
+      faceEmo.set('mouth', 100, {
         animate: false
       });
-      return deepEqual(_this.obj.state(), {
+      return deepEqual(faceEmo.state(), {
         eyebrow: -50,
         eye: -30,
         mouth: 100
       }, 'state()の値と同期されている');
     });
     test('set(parts,  { animate: false })後', function() {
-      _this.obj.set({
+      faceEmo.set({
         eyebrow: 70,
         eye: 100,
         mouth: 30
       }, {
         animate: false
       });
-      return deepEqual(_this.obj.state(), {
+      return deepEqual(faceEmo.state(), {
         eyebrow: 70,
         eye: 100,
         mouth: 30
       }, 'state()の値と同期されている');
     });
     test('100を超える値を指定', function() {
-      _this.obj.set('mouth', 1000, {
+      faceEmo.set('mouth', 1000, {
         animate: false
       });
-      return deepEqual(_this.obj.state().mouth, 100, 'state()の値は100');
+      return deepEqual(faceEmo.state().mouth, 100, 'state()の値は100');
     });
     asyncTest('-100を下回る値を指定', function() {
-      return _this.obj.set({
+      return faceEmo.set({
         eyebrow: -1000,
         eye: -101,
         mouth: -999
       }, {
         complete: function() {
           start();
-          return deepEqual(_this.obj.state(), {
+          return deepEqual(faceEmo.state(), {
             eyebrow: -100,
             eye: -100,
             mouth: -100
@@ -191,7 +192,7 @@ notStrictEqual(actual, expected, message): actual !== expected
     module('FaceEmotion: set', {
       setup: function() {
         clear();
-        return _this.obj = new FaceEmotion('face', {
+        return faceEmo = new FaceEmotion('face', {
           effect: {
             tear: true,
             angry: true
@@ -206,13 +207,13 @@ notStrictEqual(actual, expected, message): actual !== expected
         parts: {},
         effect: {}
       };
-      _ref = _this.obj.parts[parts].obj.css;
+      _ref = faceEmo.parts[parts].obj.css;
       for (cc in _ref) {
         prop = _ref[cc];
         expcss.parts[cc] = prop;
       }
       if (effect != null) {
-        _ref1 = _this.obj.parts[effect].obj.css;
+        _ref1 = faceEmo.parts[effect].obj.css;
         for (cc in _ref1) {
           prop = _ref1[cc];
           expcss.effect[cc] = prop;
@@ -256,13 +257,13 @@ notStrictEqual(actual, expected, message): actual !== expected
         range = ranges[_l];
         for (_m = 0, _len4 = range.length; _m < _len4; _m++) {
           r = range[_m];
-          _this.obj.set(key, r, {
+          faceEmo.set(key, r, {
             animate: false
           });
         }
-        deepEqual(_this.obj.parts[parts].obj.css, expcss.parts, "" + parts + ": " + range[0] + "～" + range[1]);
+        deepEqual(faceEmo.parts[parts].obj.css, expcss.parts, "" + parts + ": " + range[0] + "～" + range[1]);
         if (effect != null) {
-          _results.push(deepEqual(_this.obj.parts[effect].obj.css, expcss.effect, "" + effect + ": " + range[0] + "～" + range[1]));
+          _results.push(deepEqual(faceEmo.parts[effect].obj.css, expcss.effect, "" + effect + ": " + range[0] + "～" + range[1]));
         } else {
           _results.push(void 0);
         }
@@ -285,7 +286,7 @@ notStrictEqual(actual, expected, message): actual !== expected
       return cssCheck('mouth');
     });
     return asyncTest('set()が完了する前にset()', function() {
-      _this.obj.set('eye', -100, {
+      faceEmo.set('eye', -100, {
         speed: 100
       });
       return setTimeout(function() {
@@ -295,10 +296,10 @@ notStrictEqual(actual, expected, message): actual !== expected
           eye: 100,
           mouth: 100
         };
-        return _this.obj.set(param, {
+        return faceEmo.set(param, {
           complete: function() {
             start();
-            return deepEqual(_this.obj.state(), param, '後から実行したset()の値が有効');
+            return deepEqual(faceEmo.state(), param, '後から実行したset()の値が有効');
           }
         });
       }, 1000);
