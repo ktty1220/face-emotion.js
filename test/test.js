@@ -48,16 +48,16 @@ notStrictEqual(actual, expected, message): actual !== expected
       }
     });
     test('オプションなし', function() {
-      equal(hasEffectStyle(), false, 'エフェクト用CSSはDOMに追加されていない');
+      equal(hasEffectStyle(), false, 'new前はエフェクト用CSSはDOMに追加されていない');
       throws((function() {
         return new FaceEmotion('no-face');
       }), '存在しないIDを指定してnew -> throw');
-      equal(hasEffectStyle(), false, 'エフェクト用CSSはDOMに追加されていない');
+      equal(hasEffectStyle(), false, 'new失敗後にエフェクト用CSSはDOMに追加されていない');
       faceEmo = new FaceEmotion('face');
-      equal(hasEffectStyle(), true, 'エフェクト用CSSはDOMに追加されている');
       equal(_this.face.getElementsByClassName('face-emotion-parts').length, 5, '#faceに顔パーツが作成される');
       equal(faceEmo.parts.tear, null, '涙は作成されない');
-      return equal(faceEmo.parts.angry, null, '怒マークは作成されない');
+      equal(faceEmo.parts.angry, null, '怒マークは作成されない');
+      return equal(hasEffectStyle(), true, 'new成功後はエフェクト用CSSはDOMに追加されている');
     });
     test('effect: tear指定', function() {
       faceEmo = new FaceEmotion('face', {
@@ -92,8 +92,8 @@ notStrictEqual(actual, expected, message): actual !== expected
         size: size
       });
       outline = _this.face.getElementsByClassName('face-emotion-outline')[0];
-      equal(outline.style.width, "" + size + "px", 'size = width');
-      return equal(outline.style.height, "" + size + "px", 'size = height');
+      equal(outline.style.width, "" + size + "px", 'widthが指定したサイズになっている');
+      return equal(outline.style.height, "" + size + "px", 'heightが指定したサイズになっている');
     });
     /**
     * state
@@ -261,31 +261,31 @@ notStrictEqual(actual, expected, message): actual !== expected
             animate: false
           });
         }
-        deepEqual(faceEmo.parts[parts].obj.css, expcss.parts, "" + parts + ": " + range[0] + "～" + range[1]);
+        deepEqual(faceEmo.parts[parts].obj.css, expcss.parts, "" + parts + ": " + range[0] + " -> " + range[1] + " -> 0");
         if (effect != null) {
-          _results.push(deepEqual(faceEmo.parts[effect].obj.css, expcss.effect, "" + effect + ": " + range[0] + "～" + range[1]));
+          _results.push(deepEqual(faceEmo.parts[effect].obj.css, expcss.effect, "" + effect + ": " + range[0] + " -> " + range[1] + " -> 0"));
         } else {
           _results.push(void 0);
         }
       }
       return _results;
     };
-    test('set後のCSS状態のズレ: eyeBrowLeft', function() {
+    test('特定の範囲の状態変更後に0に戻して初期CSSの状態と相違がない: eyeBrowLeft', function() {
       return cssCheck('eyeBrowLeft');
     });
-    test('set後のCSS状態のズレ: eyeBrowRight', function() {
+    test('特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeBrowRight', function() {
       return cssCheck('eyeBrowRight', 'angry');
     });
-    test('set後のCSS状態のズレ: eyeLeft', function() {
+    test('特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeLeft', function() {
       return cssCheck('eyeLeft', 'tear');
     });
-    test('set後のCSS状態のズレ: eyeRight', function() {
+    test('特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeRight', function() {
       return cssCheck('eyeRight');
     });
-    test('set後のCSS状態のズレ: mouth', function() {
+    test('特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: mouth', function() {
       return cssCheck('mouth');
     });
-    return asyncTest('set()が完了する前にset()', function() {
+    return asyncTest('set()が完了する前にset()を実行', function() {
       faceEmo.set('eye', -100, {
         speed: 100
       });

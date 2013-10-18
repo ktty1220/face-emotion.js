@@ -33,14 +33,14 @@ suite = () ->
     teardown: () => clear()
     
   test 'オプションなし', () =>
-    equal hasEffectStyle(), false, 'エフェクト用CSSはDOMに追加されていない'
+    equal hasEffectStyle(), false, 'new前はエフェクト用CSSはDOMに追加されていない'
     throws (() => new FaceEmotion 'no-face'), '存在しないIDを指定してnew -> throw'
-    equal hasEffectStyle(), false, 'エフェクト用CSSはDOMに追加されていない'
+    equal hasEffectStyle(), false, 'new失敗後にエフェクト用CSSはDOMに追加されていない'
     faceEmo = new FaceEmotion 'face'
-    equal hasEffectStyle(), true, 'エフェクト用CSSはDOMに追加されている'
     equal @face.getElementsByClassName('face-emotion-parts').length, 5, '#faceに顔パーツが作成される'
     equal faceEmo.parts.tear, null, '涙は作成されない'
     equal faceEmo.parts.angry, null, '怒マークは作成されない'
+    equal hasEffectStyle(), true, 'new成功後はエフェクト用CSSはDOMに追加されている'
 
   test 'effect: tear指定', () =>
     faceEmo = new FaceEmotion 'face', effect: tear: true
@@ -59,8 +59,8 @@ suite = () ->
     size = 500
     faceEmo = new FaceEmotion 'face', size: size
     outline = @face.getElementsByClassName('face-emotion-outline')[0]
-    equal outline.style.width, "#{size}px", 'size = width'
-    equal outline.style.height, "#{size}px", 'size = height'
+    equal outline.style.width, "#{size}px", 'widthが指定したサイズになっている'
+    equal outline.style.height, "#{size}px", 'heightが指定したサイズになっている'
 
   ###*
   * state
@@ -145,16 +145,16 @@ suite = () ->
     key = parts.toLowerCase().replace /(right|left)$/, ''
     for range in ranges
       faceEmo.set key, r, animate: false for r in range
-      deepEqual faceEmo.parts[parts].obj.css, expcss.parts, "#{parts}: #{range[0]}～#{range[1]}"
-      deepEqual faceEmo.parts[effect].obj.css, expcss.effect, "#{effect}: #{range[0]}～#{range[1]}" if effect?
+      deepEqual faceEmo.parts[parts].obj.css, expcss.parts, "#{parts}: #{range[0]} -> #{range[1]} -> 0"
+      deepEqual faceEmo.parts[effect].obj.css, expcss.effect, "#{effect}: #{range[0]} -> #{range[1]} -> 0" if effect?
 
-  test 'set後のCSS状態のズレ: eyeBrowLeft', () => cssCheck 'eyeBrowLeft'
-  test 'set後のCSS状態のズレ: eyeBrowRight', () => cssCheck 'eyeBrowRight', 'angry'
-  test 'set後のCSS状態のズレ: eyeLeft', () => cssCheck 'eyeLeft', 'tear'
-  test 'set後のCSS状態のズレ: eyeRight', () => cssCheck 'eyeRight'
-  test 'set後のCSS状態のズレ: mouth', () => cssCheck 'mouth'
+  test '特定の範囲の状態変更後に0に戻して初期CSSの状態と相違がない: eyeBrowLeft', () => cssCheck 'eyeBrowLeft'
+  test '特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeBrowRight', () => cssCheck 'eyeBrowRight', 'angry'
+  test '特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeLeft', () => cssCheck 'eyeLeft', 'tear'
+  test '特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: eyeRight', () => cssCheck 'eyeRight'
+  test '特定の範囲の状態変更後に0に戻して初期スタイルの状態と相違がない: mouth', () => cssCheck 'mouth'
       
-  asyncTest 'set()が完了する前にset()', () =>
+  asyncTest 'set()が完了する前にset()を実行', () =>
     faceEmo.set 'eye', -100, speed: 100
     setTimeout () =>
       param = { eyebrow: 100, eye: 100, mouth: 100 }
