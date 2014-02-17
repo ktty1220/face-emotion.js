@@ -8,7 +8,7 @@ face-emotion.jsは簡単な感情表現ができるシンプルな顔パーツ�
 
 ## DEMO
 
-[簡単なデモ](http://ktty1220.ap01.aws.af.cm/face-emotion.js/demo.html)
+[簡単なデモ](http://ktty1220.github.io/face-emotion.js/demo.html)
 
 スライダーで表情を自由に操作できるデモです。
 
